@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屏東縣2027年 World GreenMech Contest 世界機關王競賽 - 倒數計時器</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: 數位電子字體 Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 標楷體字型設定 */
+        .font-kai {
+            font-family: "標楷體", "DFKai-SB", "BiauKai", "楷体", "KaiTi", serif;
+            font-weight: bold;
+        }
+
+        /* 數位電子字體：啟用等寬數字 (tabular-nums) 防止跳動 */
+        .font-digital {
+            font-family: 'Orbitron', monospace;
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum";
+            letter-spacing: 0.05em;
+        }
+
+        /* 極簡深色背景 */
+        body {
+            background-color: #0b0f19;
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* 按鈕簡約風格 */
+        .btn-primary {
+            background-color: #2563eb;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+
+        .btn-warning {
+            background-color: #d97706;
+            transition: all 0.2s ease;
+        }
+        .btn-warning:hover:not(:disabled) {
+            background-color: #b45309;
+        }
+
+        .btn-reset {
+            background-color: #334155;
+            transition: all 0.2s ease;
+        }
+        .btn-reset:hover:not(:disabled) {
+            background-color: #475569;
+        }
+
+        /* 按鈕 Disabled 樣式 */
+        .btn-disabled {
+            opacity: 0.3;
+            cursor: not-allowed !important;
+            filter: grayscale(100%);
+        }
+
+        /* 警告紅光閃爍（時間即將結束） */
+        @keyframes pulse-danger {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .time-ending {
+            animation: pulse-danger 1s infinite;
+            color: #ef4444 !important;
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between items-center p-4 sm:p-6 select-none">
+
+    <!-- 頂部狀態標示 -->
+    <header class="w-full max-w-4xl flex justify-between items-center z-10 py-2">
+        <div class="flex items-center space-x-2 text-slate-400 text-sm font-mono tracking-widest">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>SYSTEM ONLINE</span>
+        </div>
+    </header>
+
+    <!-- 主內容區：標題與計時面板 -->
+    <main class="w-full max-w-4xl flex flex-col items-center justify-center flex-1 my-4">
+        
+        <!-- 大會標題 (極簡高對比色彩) -->
+        <h1 class="font-kai text-center tracking-wider mb-8">
+            <!-- 第一段：簡約白色 -->
+            <span class="block text-3xl sm:text-5xl md:text-6xl text-slate-100 mb-2">屏東縣</span>
+            <!-- 第二段：清晰藍色 -->
+            <span class="block text-2xl sm:text-4xl md:text-5xl text-sky-400 my-2 font-extrabold">World GreenMech Contest</span>
+            <!-- 第三段：簡約翡翠綠 -->
+            <span class="block text-3xl sm:text-5xl md:text-6xl text-emerald-400 mt-2">世界機關王競賽</span>
+        </h1>
+
+        <!-- 倒數計時面板 (極簡黑框卡片) -->
+        <div class="relative flex flex-col items-center justify-center my-6 w-full max-w-4xl">
+            <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-10 flex flex-col items-center shadow-lg overflow-x-auto">
+                
+                <!-- 數字倒數區：包含小時、分、秒與毫秒 -->
+                <div id="timeDisplay" class="font-digital my-2 flex items-baseline justify-center">
+                    <!-- 時 (十位) -->
+                    <span id="h1" class="w-[0.7em] mx-0.5 sm:mx-1 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-sky-400">0</span>
+                    <!-- 時 (個位) -->
+                    <span id="h2" class="w-[0.7em] mx-0.5 sm:mx-1 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-sky-400">0</span>
+                    
+                    <!-- 冒號 : -->
+                    <span class="w-[0.3em] mx-1 sm:mx-2 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-slate-500">:</span>
+
+                    <!-- 分 (十位) -->
+                    <span id="m1" class="w-[0.7em] mx-0.5 sm:mx-1 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-sky-400">0</span>
+                    <!-- 分 (個位) -->
+                    <span id="m2" class="w-[0.7em] mx-0.5 sm:mx-1 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-sky-400">3</span>
+                    
+                    <!-- 冒號 : -->
+                    <span class="w-[0.3em] mx-1 sm:mx-2 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-slate-500">:</span>
+                    
+                    <!-- 秒 (十位) -->
+                    <span id="s1" class="w-[0.7em] mx-0.5 sm:mx-1 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-sky-400">0</span>
+                    <!-- 秒 (個位) -->
+                    <span id="s2" class="w-[0.7em] mx-0.5 sm:mx-1 text-center inline-block text-5xl sm:text-7xl md:text-8xl font-bold text-sky-400">0</span>
+                    
+                    <!-- 小數點 . -->
+                    <span class="w-[0.3em] mx-0.5 sm:mx-1 text-center inline-block text-2xl sm:text-4xl md:text-5xl font-bold text-slate-500">.</span>
+                    
+                    <!-- 微秒/毫秒 (百位) -->
+                    <span id="ms1" class="w-[0.6em] mx-0.5 text-center inline-block text-2xl sm:text-4xl md:text-5xl font-bold text-slate-400">0</span>
+                    <!-- 微秒/毫秒 (十位) -->
+                    <span id="ms2" class="w-[0.6em] mx-0.5 text-center inline-block text-2xl sm:text-4xl md:text-5xl font-bold text-slate-400">0</span>
+                    <!-- 微秒/毫秒 (個位) -->
+                    <span id="ms3" class="w-[0.6em] mx-0.5 text-center inline-block text-2xl sm:text-4xl md:text-5xl font-bold text-slate-400">0</span>
+                </div>
+
+                <!-- 狀態標籤 -->
+                <div id="statusBadge" class="mt-4 px-4 py-1 rounded-md text-xs sm:text-sm font-semibold tracking-wider bg-slate-800 border border-slate-700 text-slate-300 uppercase">
+                    SETTING
+                </div>
+            </div>
+        </div>
+
+        <!-- 自訂時間設定區塊 -->
+        <div id="customTimeConfig" class="flex flex-wrap items-center justify-center gap-3 mb-6 bg-slate-900/80 border border-slate-800 p-4 rounded-xl w-full max-w-3xl">
+            <div class="flex items-center space-x-2 text-slate-300 font-medium">
+                <i class="fas fa-clock text-sky-400"></i>
+                <span>設定時間：</span>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <input 
+                    type="number" 
+                    id="inputHour" 
+                    min="0" 
+                    max="99" 
+                    value="0" 
+                    class="w-14 sm:w-16 bg-slate-800 border border-slate-700 rounded-lg py-1.5 px-2 text-center text-sky-400 font-bold focus:outline-none focus:border-sky-500 transition-colors">
+                <span class="text-slate-400 text-sm font-semibold">時</span>
+
+                <input 
+                    type="number" 
+                    id="inputMin" 
+                    min="0" 
+                    max="59" 
+                    value="3" 
+                    class="w-14 sm:w-16 bg-slate-800 border border-slate-700 rounded-lg py-1.5 px-2 text-center text-sky-400 font-bold focus:outline-none focus:border-sky-500 transition-colors">
+                <span class="text-slate-400 text-sm font-semibold">分</span>
+
+                <input 
+                    type="number" 
+                    id="inputSec" 
+                    min="0" 
+                    max="59" 
+                    value="0" 
+                    class="w-14 sm:w-16 bg-slate-800 border border-slate-700 rounded-lg py-1.5 px-2 text-center text-sky-400 font-bold focus:outline-none focus:border-sky-500 transition-colors">
+                <span class="text-slate-400 text-sm font-semibold">秒</span>
+            </div>
+
+            <!-- READY 設定確認按鈕 -->
+            <button id="readyBtn" onclick="handleReadyAction()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold px-4 py-1.5 rounded-lg border border-emerald-500 flex items-center space-x-2 transition-all">
+                <i class="fas fa-check-circle"></i>
+                <span>READY (準備)</span>
+            </button>
+
+            <!-- 預設常用時間快選按鈕 -->
+            <div class="flex space-x-1.5 ml-0 sm:ml-2">
+                <button onclick="setPresetTime(0, 1, 0)" class="preset-btn bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs py-1.5 px-2 rounded-md transition-colors">1分</button>
+                <button onclick="setPresetTime(0, 3, 0)" class="preset-btn bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs py-1.5 px-2 rounded-md transition-colors">3分</button>
+                <button onclick="setPresetTime(0, 5, 0)" class="preset-btn bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs py-1.5 px-2 rounded-md transition-colors">5分</button>
+                <button onclick="setPresetTime(1, 0, 0)" class="preset-btn bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs py-1.5 px-2 rounded-md transition-colors">1小時</button>
+            </div>
+        </div>
+
+        <!-- 操作按鈕區 -->
+        <div class="flex items-center justify-center space-x-6 sm:space-x-10 mt-2 w-full max-w-md">
+            <!-- 開始 / 暫停 / 繼續 主按鈕 -->
+            <button id="mainBtn" onclick="handleMainAction()" class="btn-primary flex-1 py-3.5 sm:py-4 px-6 rounded-xl text-white font-bold text-xl sm:text-2xl tracking-wider flex items-center justify-center space-x-3 active:scale-95 shadow-md">
+                <i id="mainBtnIcon" class="fas fa-play text-lg sm:text-xl"></i>
+                <span id="mainBtnText">開始</span>
+            </button>
+            
+            <!-- 重設按鈕 -->
+            <button id="resetBtn" onclick="handleResetAction()" disabled class="btn-reset btn-disabled flex-1 py-3.5 sm:py-4 px-6 rounded-xl text-white font-bold text-xl sm:text-2xl tracking-wider flex items-center justify-center space-x-3 active:scale-95 shadow-md">
+                <i class="fas fa-rotate-left text-lg sm:text-xl"></i>
+                <span>重設</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        // 設定預設總時間為 3 分鐘
+        let totalMs = 180 * 1000;
+        let remainingMs = totalMs;
+        let startTime = null;
+        let pausedRemainingMs = totalMs;
+        let animFrameId = null;
+        let lastBeepSecond = -1;
+        
+        // 狀態定義: 'SETTING' (設定中), 'READY' (已準備完畢), 'RUNNING' (計時中), 'PAUSED' (暫停中)
+        let currentState = 'SETTING';
+
+        // HTML 數字格元素與輸入元素存取
+        const timeDisplay = document.getElementById('timeDisplay');
+        const elH1 = document.getElementById('h1');
+        const elH2 = document.getElementById('h2');
+        const elM1 = document.getElementById('m1');
+        const elM2 = document.getElementById('m2');
+        const elS1 = document.getElementById('s1');
+        const elS2 = document.getElementById('s2');
+        const elMs1 = document.getElementById('ms1');
+        const elMs2 = document.getElementById('ms2');
+        const elMs3 = document.getElementById('ms3');
+
+        const inputHour = document.getElementById('inputHour');
+        const inputMin = document.getElementById('inputMin');
+        const inputSec = document.getElementById('inputSec');
+        const readyBtn = document.getElementById('readyBtn');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+
+        const statusBadge = document.getElementById('statusBadge');
+        const mainBtn = document.getElementById('mainBtn');
+        const mainBtnText = document.getElementById('mainBtnText');
+        const mainBtnIcon = document.getElementById('mainBtnIcon');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // 讀取輸入數值並套用時間
+        function applyCustomTime() {
+            let hrs = parseInt(inputHour.value) || 0;
+            let mins = parseInt(inputMin.value) || 0;
+            let secs = parseInt(inputSec.value) || 0;
+
+            // 輸入邊界值保護
+            if (hrs < 0) hrs = 0;
+            if (mins < 0) mins = 0;
+            if (mins > 59) mins = 59;
+            if (secs < 0) secs = 0;
+            if (secs > 59) secs = 59;
+
+            totalMs = (hrs * 3600 + mins * 60 + secs) * 1000;
+            remainingMs = totalMs;
+            pausedRemainingMs = totalMs;
+            updateDisplay();
+        }
+
+        // 按下 READY (準備) 按鈕
+        function handleReadyAction() {
+            if (currentState !== 'SETTING') return;
+
+            applyCustomTime();
+            if (remainingMs <= 0) return;
+
+            currentState = 'READY';
+            playBeep(880, 0.15);
+
+            // 鎖定輸入框
+            toggleConfigInputs(false);
+
+            // 更新 UI 狀態
+            statusBadge.textContent = 'READY';
+            statusBadge.className = 'mt-4 px-4 py-1 rounded-md text-xs sm:text-sm font-semibold tracking-wider bg-emerald-950 border border-emerald-800 text-emerald-400 uppercase';
+            
+            // 啟用重設按鈕
+            resetBtn.disabled = false;
+            resetBtn.classList.remove('btn-disabled');
+        }
+
+        // 快速預設時間設定
+        function setPresetTime(h, m, s) {
+            if (currentState !== 'SETTING') return;
+            inputHour.value = h;
+            inputMin.value = m;
+            inputSec.value = s;
+            applyCustomTime();
+        }
+
+        // 切換自訂設定區域的啟用/停用狀態
+        function toggleConfigInputs(enabled) {
+            inputHour.disabled = !enabled;
+            inputMin.disabled = !enabled;
+            inputSec.disabled = !enabled;
+            readyBtn.disabled = !enabled;
+            presetBtns.forEach(btn => btn.disabled = !enabled);
+
+            if (enabled) {
+                inputHour.classList.remove('opacity-50', 'cursor-not-allowed');
+                inputMin.classList.remove('opacity-50', 'cursor-not-allowed');
+                inputSec.classList.remove('opacity-50', 'cursor-not-allowed');
+                readyBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                presetBtns.forEach(btn => btn.classList.remove('opacity-50', 'cursor-not-allowed'));
+            } else {
+                inputHour.classList.add('opacity-50', 'cursor-not-allowed');
+                inputMin.classList.add('opacity-50', 'cursor-not-allowed');
+                inputSec.classList.add('opacity-50', 'cursor-not-allowed');
+                readyBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                presetBtns.forEach(btn => btn.classList.add('opacity-50', 'cursor-not-allowed'));
+            }
+        }
+
+        // Web Audio API 提示音效產生器
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playBeep(freq = 880, duration = 0.15, type = 'sine') {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        function playFinishAlarm() {
+            let count = 0;
+            const interval = setInterval(() => {
+                playBeep(1046.5, 0.2, 'square');
+                count++;
+                if (count >= 5) clearInterval(interval);
+            }, 250);
+        }
+
+        // 更新 UI 畫面
+        function updateDisplay() {
+            let ms = remainingMs < 0 ? 0 : remainingMs;
+            const hrs = Math.floor(ms / 3600000);
+            const mins = Math.floor((ms % 3600000) / 60000);
+            const secs = Math.floor((ms % 60000) / 1000);
+            const cs = Math.floor(ms % 1000);
+
+            const strH = String(hrs).padStart(2, '0');
+            const strM = String(mins).padStart(2, '0');
+            const strS = String(secs).padStart(2, '0');
+            const strCS = String(cs).padStart(3, '0');
+
+            elH1.textContent = strH[0];
+            elH2.textContent = strH[1];
+            elM1.textContent = strM[0];
+            elM2.textContent = strM[1];
+            elS1.textContent = strS[0];
+            elS2.textContent = strS[1];
+            elMs1.textContent = strCS[0];
+            elMs2.textContent = strCS[1];
+            elMs3.textContent = strCS[2];
+
+            // 倒數最後 10 秒視覺警告
+            if (remainingMs <= 10000 && remainingMs > 0 && currentState === 'RUNNING') {
+                timeDisplay.classList.add('time-ending');
+            } else if (remainingMs > 10000) {
+                timeDisplay.classList.remove('time-ending');
+            }
+        }
+
+        // 倒數計時主迴圈
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            remainingMs = pausedRemainingMs - elapsed;
+
+            if (remainingMs <= 0) {
+                remainingMs = 0;
+                updateDisplay();
+                timerFinished();
+                return;
+            }
+
+            // 最後 5 秒的每秒嗶聲判斷
+            const currentSecond = Math.ceil(remainingMs / 1000);
+            if (currentSecond <= 5 && currentSecond > 0 && currentSecond !== lastBeepSecond) {
+                playBeep(880, 0.1);
+                lastBeepSecond = currentSecond;
+            }
+
+            updateDisplay();
+            animFrameId = requestAnimationFrame(step);
+        }
+
+        // 主要動態行為按鈕處理 (開始 / 暫停 / 繼續)
+        function handleMainAction() {
+            if (currentState === 'SETTING') {
+                // 若尚未按下 Ready，點擊開始自動執行 Ready 並開始
+                handleReadyAction();
+                startTimer();
+            } else if (currentState === 'READY' || currentState === 'PAUSED') {
+                startTimer();
+            } else if (currentState === 'RUNNING') {
+                pauseTimer();
+            }
+        }
+
+        // 啟動 / 繼續 計時器 (Start / Continue)
+        function startTimer() {
+            if (remainingMs <= 0) return;
+
+            currentState = 'RUNNING';
+            playBeep(660, 0.1);
+
+            startTime = null;
+            lastBeepSecond = Math.ceil(remainingMs / 1000);
+            animFrameId = requestAnimationFrame(step);
+
+            toggleConfigInputs(false);
+
+            // UI 狀態切換
+            mainBtnText.textContent = '暫停';
+            mainBtnIcon.className = 'fas fa-pause text-lg sm:text-xl';
+            mainBtn.className = 'btn-warning flex-1 py-3.5 sm:py-4 px-6 rounded-xl text-white font-bold text-xl sm:text-2xl tracking-wider flex items-center justify-center space-x-3 active:scale-95';
+
+            resetBtn.disabled = false;
+            resetBtn.classList.remove('btn-disabled');
+
+            statusBadge.textContent = 'COUNTING';
+            statusBadge.className = 'mt-4 px-4 py-1 rounded-md text-xs sm:text-sm font-semibold tracking-wider bg-emerald-950 border border-emerald-800 text-emerald-400 uppercase';
+        }
+
+        // 暫停計時器 (Pause)
+        function pauseTimer() {
+            currentState = 'PAUSED';
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            pausedRemainingMs = remainingMs;
+            playBeep(440, 0.15);
+
+            // UI 狀態切換
+            mainBtnText.textContent = '繼續';
+            mainBtnIcon.className = 'fas fa-play text-lg sm:text-xl';
+            mainBtn.className = 'btn-primary flex-1 py-3.5 sm:py-4 px-6 rounded-xl text-white font-bold text-xl sm:text-2xl tracking-wider flex items-center justify-center space-x-3 active:scale-95';
+
+            statusBadge.textContent = 'PAUSED';
+            statusBadge.className = 'mt-4 px-4 py-1 rounded-md text-xs sm:text-sm font-semibold tracking-wider bg-amber-950 border border-amber-800 text-amber-400 uppercase';
+        }
+
+        // 計時結束處理
+        function timerFinished() {
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            currentState = 'SETTING';
+            playFinishAlarm();
+
+            timeDisplay.classList.add('time-ending');
+            statusBadge.textContent = 'TIME UP';
+            statusBadge.className = 'mt-4 px-4 py-1 rounded-md text-xs sm:text-sm font-semibold tracking-wider bg-red-950 border border-red-800 text-red-400 uppercase animate-bounce';
+
+            // 重置按鈕狀態為「開始」
+            mainBtnText.textContent = '開始';
+            mainBtnIcon.className = 'fas fa-play text-lg sm:text-xl';
+            mainBtn.className = 'btn-primary flex-1 py-3.5 sm:py-4 px-6 rounded-xl text-white font-bold text-xl sm:text-2xl tracking-wider flex items-center justify-center space-x-3 active:scale-95';
+            
+            toggleConfigInputs(true);
+        }
+
+        // 重設計時器 (Reset)
+        function handleResetAction() {
+            if (resetBtn.disabled) return;
+
+            playBeep(330, 0.15);
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            currentState = 'SETTING';
+
+            // 解鎖時間輸入欄位
+            toggleConfigInputs(true);
+            applyCustomTime();
+
+            // 清除視覺警告樣式
+            timeDisplay.classList.remove('time-ending');
+
+            // 按鈕變成「開始」，重設按鈕 disabled
+            mainBtnText.textContent = '開始';
+            mainBtnIcon.className = 'fas fa-play text-lg sm:text-xl';
+            mainBtn.className = 'btn-primary flex-1 py-3.5 sm:py-4 px-6 rounded-xl text-white font-bold text-xl sm:text-2xl tracking-wider flex items-center justify-center space-x-3 active:scale-95';
+
+            resetBtn.disabled = true;
+            resetBtn.classList.add('btn-disabled');
+
+            statusBadge.textContent = 'SETTING';
+            statusBadge.className = 'mt-4 px-4 py-1 rounded-md text-xs sm:text-sm font-semibold tracking-wider bg-slate-800 border border-slate-700 text-slate-300 uppercase';
+        }
+
+        // 頁面初始化
+        window.onload = function() {
+            applyCustomTime();
+        };
+
+        // 監聽鍵盤事件：按下空白鍵觸發「開始/暫停/繼續」
+        window.addEventListener('keydown', function(event) {
+            if (document.activeElement.tagName === 'INPUT') return;
+
+            if (event.code === 'Space' || event.keyCode === 32) {
+                event.preventDefault();
+                handleMainAction();
+            }
+        });
+    </script>
+</body>
+</html>
